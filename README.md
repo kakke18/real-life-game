@@ -6,4 +6,4 @@ real life game
 cd bin
 java Server 10000
 ```
-client/RealLifeGame.exeを実行
+run client/RealLifeGame.exe
