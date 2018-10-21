@@ -1,0 +1,77 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SceneController : MonoBehaviour {
+
+	// Use this for initialization
+	void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+
+    public void Start()
+    {
+        SceneManager.LoadScene("Start");
+    }
+
+    public void Registration()
+    {
+        SceneManager.LoadScene("Registration");
+    }
+
+    public void SystemDescription()
+    {
+        SceneManager.LoadScene("SystemDescription");
+    }
+
+    public void Login()
+    {
+        SceneManager.LoadScene("Login");
+    }
+
+    public void MyPage()
+    {
+        SceneManager.LoadScene("MyPage");
+    }
+
+    public void GameTitle()
+    {
+        SceneManager.LoadScene("GameTitle");
+    }
+
+    public void GameDescription()
+    {
+        SceneManager.LoadScene("GameDescription");
+    }
+
+    public void GameRanking()
+    {
+        SceneManager.LoadScene("GameRanking");
+    }
+
+    public void LastRanking()
+    {
+        SceneManager.LoadScene("LastRanking");
+    }
+
+    public void TopRanking()
+    {
+        SceneManager.LoadScene("TopRanking");
+    }
+
+    public void Game()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void GameSkill() 
+    {
+        SceneManager.LoadScene("GameSkill");
+    }
+}

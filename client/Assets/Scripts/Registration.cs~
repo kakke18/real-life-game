@@ -1,0 +1,116 @@
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.IO;
+
+public class Registration : Client {
+
+	bool useServer = StartUp.useServer;
+
+	int errorTest; //Debug用
+	
+	NetworkStream ns;
+	InputField userName, pass, confirmPass;
+	Text errorMsg;
+	Image errorImg;
+	SceneController sc = new SceneController();
+	public static string name = "";
+
+	bool blankFlag = false;
+	bool matchFlag = false;
+
+	// Use this for initialization
+	void Start () {
+		/* サーバを使う場合 */
+		if (useServer) {
+			this.ns = StartUp.ns;
+		}
+
+		userName = GameObject.Find("UserNameInputField").GetComponent<InputField>();
+		pass = GameObject.Find("PassWordInputField").GetComponent<InputField>();
+		confirmPass = GameObject.Find("PassWordInputField2").GetComponent<InputField>();
+		errorImg = GameObject.Find("ErrorImage").GetComponent<Image>();
+		errorMsg = GameObject.Find("ErrorMessage").GetComponent<Text>();
+
+		errorImg.gameObject.SetActive(false);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		/* サーバを使う場合 */
+		if (useServer) {
+			if(blankFlag) {
+				blankFlag = false;
+				errorImg.gameObject.SetActive(true);
+				errorMsg.text = "未記入の箇所があります";
+			}
+			if(matchFlag) {
+				matchFlag = false;
+				errorImg.gameObject.SetActive(true);
+				errorMsg.text = "確認用パスワードが一致しません";
+			}
+
+			base.receiveMessage(ns); //メッセージを受信
+			if (base.recMsg != "") {
+				if (base.recMsg.Contains("01")) {
+					sc.SystemDescription();
+				}
+				/* Registration error */
+				else if (base.recMsg.Contains("00")) {
+					errorImg.gameObject.SetActive(true);
+					errorMsg.text = "このユーザ名は既に存在します";
+				}
+			}
+		}
+	}
+
+	public void OnClick() {
+		string pass1, pass2, sendMsg;
+
+		name = userName.text;
+		pass1 = pass.text;
+		pass2 = confirmPass.text;
+
+		/* サーバを使う場合 */
+		if (useServer) {
+			if (name != "" && pass1 != "" && pass2 != "") {
+				if (!pass1.Equals(pass2)) {
+					matchFlag = true;
+				}
+				else {
+					sendMsg = "0" + name + "\n" + pass1;
+					base.sendMessage(ns, sendMsg);
+					base.sendMessage(ns, "20:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0");
+					base.sendMessage(ns, "310000");
+				}
+			}
+			else {
+				blankFlag = true;
+			}
+		}
+		/* サーバを使わない場合 */
+		else {
+			if (int.TryParse(name, out errorTest)) {
+				errorImg.gameObject.SetActive(true);
+				if(errorTest == 0) {
+					errorMsg.text = "未記入の箇所があります";
+				}
+				else if (errorTest == 1) {
+					errorMsg.text = "確認用パスワードが一致しません";
+				}
+				else if (errorTest == 2) {
+					errorMsg.text = "このユーザ名は既に存在します";
+				}
+				else {
+					sc.SystemDescription();
+				}
+			}
+			else {
+				Debug.Log("Please input number on name");
+			}
+		}
+	}
+}
